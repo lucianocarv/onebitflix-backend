@@ -3,7 +3,7 @@ import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
 import { sequelize } from "../database";
 import { adminJSResources } from "./resources";
-import { User } from "../models";
+import { Category, Course, Episode, User } from "../models";
 import bcrypt from "bcrypt";
 import { locale } from "./locale";
 
@@ -36,6 +36,22 @@ export const adminJs = new AdminJS({
 		},
 	}, // para customizar as cores do painel
 	locale: locale,
+	dashboard: {
+		component: AdminJS.bundle("./components/Dashboard"),
+		handler: async (req, res, context) => {
+			const courses = await Course.count();
+			const episodes = await Episode.count();
+			const categories = await Category.count();
+			const standarUsers = await User.count({ where: { role: "user" } });
+
+			res.json({
+				Cursos: courses,
+				Episodios: episodes,
+				Categorias: categories,
+				Usuarios: standarUsers,
+			});
+		},
+	},
 });
 
 export const adminJsRouter = AdminJSExpress.buildAuthenticatedRouter(
