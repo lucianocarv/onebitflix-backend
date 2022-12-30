@@ -5,6 +5,7 @@ import { sequelize } from "../database";
 import { adminJSResources } from "./resources";
 import { User } from "../models";
 import bcrypt from "bcrypt";
+import { locale } from "./locale";
 
 AdminJS.registerAdapter(AdminJSSequelize); // passa para o AdminJS o adpatador que vamos usar no DB
 
@@ -34,6 +35,7 @@ export const adminJs = new AdminJS({
 			},
 		},
 	}, // para customizar as cores do painel
+	locale: locale,
 });
 
 export const adminJsRouter = AdminJSExpress.buildAuthenticatedRouter(
