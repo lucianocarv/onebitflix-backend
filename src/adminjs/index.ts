@@ -3,9 +3,10 @@ import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
 import { sequelize } from "../database";
 import { adminJSResources } from "./resources";
-import { Category, Course, Episode, User } from "../models";
-import bcrypt from "bcrypt";
 import { locale } from "./locale";
+import { dashboardOptions } from "./dashboard";
+import { brandingOptions } from "./branding";
+import { authenticationOptions } from "./authentication";
 
 AdminJS.registerAdapter(AdminJSSequelize); // passa para o AdminJS o adpatador que vamos usar no DB
 
@@ -13,66 +14,12 @@ export const adminJs = new AdminJS({
 	databases: [sequelize], // passa o banco de dados instanciado como sequelize
 	rootPath: "/admin", // rota para acessar o painel administrativo
 	resources: adminJSResources, // define os recursos no adminjs
-	branding: {
-		companyName: "OneBitFlix",
-		logo: "/onebitflix.svg",
-		favicon: "/onebitflix.svg",
-		theme: {
-			colors: {
-				primary100: "#ff0043",
-				primary80: "#ff1a57",
-				primary60: "#ff3369",
-				primary40: "#ff4d7c",
-				primary20: "#ff668f",
-				grey100: "#151515",
-				grey80: "#333333",
-				grey60: "#4d4d4d",
-				grey40: "#666666",
-				grey20: "#dddddd",
-				filterBg: "#333333",
-				accent: "#151515",
-				hoverBg: "#151515",
-			},
-		},
-	}, // para customizar as cores do painel
+	branding: brandingOptions,
 	locale: locale,
-	dashboard: {
-		component: AdminJS.bundle("./components/Dashboard"),
-		handler: async (req, res, context) => {
-			const courses = await Course.count();
-			const episodes = await Episode.count();
-			const categories = await Category.count();
-			const standarUsers = await User.count({ where: { role: "user" } });
-
-			res.json({
-				Cursos: courses,
-				Episodios: episodes,
-				Categorias: categories,
-				Usuarios: standarUsers,
-			});
-		},
-	},
+	dashboard: dashboardOptions,
 });
 
-export const adminJsRouter = AdminJSExpress.buildAuthenticatedRouter(
-	adminJs,
-	{
-		authenticate: async (email, password) => {
-			const user = await User.findOne({ where: { email } });
-			if (user && user.role == "admin") {
-				const metched = await bcrypt.compare(password, user.password);
-				if (metched) {
-					return user;
-				}
-			}
-
-			return false;
-		},
-		cookiePassword: "senha-do-cookie",
-	},
-	null,
-	{
-		resave: false,
-		saveUninitialized: false,
-	}
-); // cria as rotas de acesso para o adminjs
+export const adminJsRouter = AdminJSExpress.buildAuthenticatedRouter(adminJs, authenticationOptions, null, {
+	resave: false,
+	saveUninitialized: false,
+}); // cria as rotas de acesso para o adminjs
