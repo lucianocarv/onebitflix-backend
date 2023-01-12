@@ -2,3 +2,5 @@ node_modules
 uploads
 info.txt
 public/thumbnails
+
+yarn-error.log
