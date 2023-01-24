@@ -2,13 +2,15 @@ import express from "express";
 import { adminJs, adminJsRouter } from "./adminjs";
 import { sequelize } from "./database";
 import { router } from "./routes";
+import cors from "cors";
 
 const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cors());
 
 app.use(express.static("public"));
-// passa o caminho de acesso do admin, e a rota
 app.use(adminJs.options.rootPath, adminJsRouter);
-const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
