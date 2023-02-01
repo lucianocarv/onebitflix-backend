@@ -15,4 +15,6 @@ que foi inspirada na plataforma da Netflix</p>~
   <li><code>Express</code> é framework para gerenciar as requisições HTTP</li>
   <li><code>Sequelize</code> é a ORM do projeto</li>
   <li><code>PostgreSQL</code> é o banco de dados escolhido</li>
+  <li><code>AdminJS</code> para administração do backend de forma mais fácil</li>
+  <li><code>JWT</code> para realizar o login na plataforma</li>
 </ul>
